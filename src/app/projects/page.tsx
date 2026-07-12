@@ -28,6 +28,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import projectsData from '../../../data/project.json';
 import '@/styles/ProjectsPage.css';
+import Loader from '@/components/Loader';
 
 interface Project {
   id: string;
@@ -136,6 +137,9 @@ const ProjectsPage = () => {
 
   // Filter projects based on active tab and search query
   const filteredProjects = (projectsData as Project[]).filter((project) => {
+    // Filter out projects with null links
+    if (project.link === null) return false;
+
     // Tab filter
     if (activeTab === 'ai-advanced') {
       const isAI = project.categories.includes('ai') || project.categories.includes('advanced') || project.aiPowered;
@@ -200,6 +204,7 @@ const ProjectsPage = () => {
 
   return (
     <>
+      <Loader/>
       <Navbar />
 
       <main className="projects-page-container">
@@ -240,7 +245,8 @@ const ProjectsPage = () => {
           <motion.div
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.05 }}
             className="projects-cards-grid"
           >
             <AnimatePresence mode="popLayout">
